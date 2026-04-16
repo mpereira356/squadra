@@ -3,27 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestão do Time - Controle Financeiro Completo</title>
-    <script src="https://cdn.tailwindcss.com" defer></script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js" defer></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" defer></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+    <title>Amigos da Squadra - Gestão Financeira</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        .animate-slide-in { animation: slideIn 0.3s ease-out; }
+        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .animate-slide-in { animation: slideIn 0.4s ease-out; }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
         .animate-pulse-custom { animation: pulse 2s infinite; }
-        .modal-overlay { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); }
-        .pdf-report { font-family: 'Arial', sans-serif; padding: 40px; background: white; }
-        .pdf-report h1 { color: #1e40af; font-size: 28px; margin-bottom: 10px; }
-        .pdf-report h2 { color: #1e3a8a; font-size: 20px; margin-top: 20px; margin-bottom: 10px; border-bottom: 2px solid #3b82f6; padding-bottom: 5px; }
+        .modal-overlay { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); }
+        
+        /* Estilo do Escudo */
+        .escudo-container {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2c4a7a 50%, #1e3a5f 100%);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .escudo-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(251,191,36,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        .escudo-inner {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Estilo do Escudo com Imagem */
+        .escudo-imagem {
+            background-image: url('logo.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .escudo-imagem-texto {
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .bg-squadra { background: linear-gradient(135deg, #1e3a5f 0%, #2c4a7a 50%, #1e3a5f 100%); }
+        .text-squadra { color: #fbbf24; }
+        .border-squadra { border-color: #fbbf24; }
+        .btn-squadra { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); }
+        .btn-squadra:hover { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); transform: scale(1.02); }
+        
+        .pdf-report {
+            font-family: 'Arial', sans-serif;
+            padding: 40px;
+            background: white;
+        }
+        .pdf-report h1 { color: #1e3a5f; font-size: 28px; margin-bottom: 10px; }
+        .pdf-report h2 { color: #2c4a7a; font-size: 20px; margin-top: 20px; margin-bottom: 10px; border-bottom: 2px solid #fbbf24; padding-bottom: 5px; }
         .pdf-report .header { text-align: center; margin-bottom: 30px; }
         .pdf-report .summary-card { background: #f3f4f6; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
         .pdf-report table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         .pdf-report th, .pdf-report td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        .pdf-report th { background: #3b82f6; color: white; }
+        .pdf-report th { background: #1e3a5f; color: white; }
         .pdf-report .positive { color: #16a34a; font-weight: bold; }
         .pdf-report .negative { color: #dc2626; font-weight: bold; }
         .pdf-report .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #6b7280; }
@@ -37,74 +107,102 @@
         function App() {
             // ========== LISTAS PRÉ-CADASTRADAS ==========
             const MENSALISTAS_FIXOS = [
-                { nome: "Andrey", telefone: "11999990001", tipo: "mensal" },
-                { nome: "Bruno Lima", telefone: "11999990002", tipo: "mensal" },
-                { nome: "Cicero", telefone: "11999990003", tipo: "mensal" },
-                { nome: "Cleiber", telefone: "11999990004", tipo: "mensal" },
-                { nome: "Eliseu", telefone: "11999990005", tipo: "mensal" },
-                { nome: "Fabricio Hugo Souza", telefone: "11999990006", tipo: "mensal" },
-                { nome: "Felipe", telefone: "11999990007", tipo: "mensal" },
-                { nome: "Fernando", telefone: "11999990008", tipo: "mensal" },
-                { nome: "Giba", telefone: "11999990009", tipo: "mensal" },
-                { nome: "Gustavo Sorte", telefone: "11999990010", tipo: "mensal" },
-                { nome: "Gustavo Hofmann", telefone: "11999990011", tipo: "mensal" },
-                { nome: "Junior", telefone: "11999990012", tipo: "mensal" },
-                { nome: "Maceió", telefone: "11999990013", tipo: "mensal" },
-                { nome: "Marcão", telefone: "11999990014", tipo: "mensal" },
-                { nome: "Paulinho", telefone: "11999990015", tipo: "mensal" },
-                { nome: "Renan", telefone: "11999990016", tipo: "mensal" },
-                { nome: "Rick Goulard", telefone: "11999990017", tipo: "mensal" },
-                { nome: "Tito", telefone: "11999990018", tipo: "mensal" },
-                { nome: "Vilson", telefone: "11999990019", tipo: "mensal" }
+                { nome: "Andrey", telefone: "11999990001", tipo: "mensal", observacao: "" },
+                { nome: "Bruno Lima", telefone: "11999990002", tipo: "mensal", observacao: "" },
+                { nome: "Cicero", telefone: "11999990003", tipo: "mensal", observacao: "" },
+                { nome: "Cleiber", telefone: "11999990004", tipo: "mensal", observacao: "" },
+                { nome: "Eliseu", telefone: "11999990005", tipo: "mensal", observacao: "" },
+                { nome: "Fabricio Hugo Souza", telefone: "11999990006", tipo: "mensal", observacao: "" },
+                { nome: "Felipe", telefone: "11999990007", tipo: "mensal", observacao: "" },
+                { nome: "Fernando", telefone: "11999990008", tipo: "mensal", observacao: "" },
+                { nome: "Giba", telefone: "11999990009", tipo: "mensal", observacao: "" },
+                { nome: "Gustavo Sorte", telefone: "11999990010", tipo: "mensal", observacao: "" },
+                { nome: "Gustavo Hofmann", telefone: "11999990011", tipo: "mensal", observacao: "" },
+                { nome: "Junior", telefone: "11999990012", tipo: "mensal", observacao: "" },
+                { nome: "Maceió", telefone: "11999990013", tipo: "mensal", observacao: "" },
+                { nome: "Marcão", telefone: "11999990014", tipo: "mensal", observacao: "" },
+                { nome: "Paulinho", telefone: "11999990015", tipo: "mensal", observacao: "" },
+                { nome: "Renan", telefone: "11999990016", tipo: "mensal", observacao: "" },
+                { nome: "Rick Goulard", telefone: "11999990017", tipo: "mensal", observacao: "" },
+                { nome: "Tito", telefone: "11999990018", tipo: "mensal", observacao: "" },
+                { nome: "Vilson", telefone: "11999990019", tipo: "mensal", observacao: "" }
             ];
 
-            const AVULSOS_ROTINEIROS = [
-                { nome: "Carlos Alberto", telefone: "11988880001", tipo: "avulso" },
-                { nome: "Marcelo Silva", telefone: "11988880002", tipo: "avulso" },
-                { nome: "Rafael Souza", telefone: "11988880003", tipo: "avulso" },
-                { nome: "Thiago Santos", telefone: "11988880004", tipo: "avulso" },
-                { nome: "Rodrigo Lima", telefone: "11988880005", tipo: "avulso" },
-                { nome: "André Costa", telefone: "11988880006", tipo: "avulso" },
-                { nome: "Luiz Fernando", telefone: "11988880007", tipo: "avulso" },
-                { nome: "Paulo Henrique", telefone: "11988880008", tipo: "avulso" },
-                { nome: "Diego Alves", telefone: "11988880009", tipo: "avulso" },
-                { nome: "Bruno Henrique", telefone: "11988880010", tipo: "avulso" }
+            const AVULSOS_CADASTRADOS = [
+                { id: 1, nome: "Carlos Alberto", telefone: "11988880001", observacao: "", ativo: true },
+                { id: 2, nome: "Marcelo Silva", telefone: "11988880002", observacao: "", ativo: true },
+                { id: 3, nome: "Rafael Souza", telefone: "11988880003", observacao: "", ativo: true },
+                { id: 4, nome: "Thiago Santos", telefone: "11988880004", observacao: "", ativo: true },
+                { id: 5, nome: "Rodrigo Lima", telefone: "11988880005", observacao: "", ativo: true },
+                { id: 6, nome: "André Costa", telefone: "11988880006", observacao: "", ativo: true },
+                { id: 7, nome: "Luiz Fernando", telefone: "11988880007", observacao: "", ativo: true },
+                { id: 8, nome: "Paulo Henrique", telefone: "11988880008", observacao: "", ativo: true },
+                { id: 9, nome: "Diego Alves", telefone: "11988880009", observacao: "", ativo: true },
+                { id: 10, nome: "Bruno Henrique", telefone: "11988880010", observacao: "", ativo: true }
             ];
-
-            const TODOS_JOGADORES = [...MENSALISTAS_FIXOS, ...AVULSOS_ROTINEIROS];
 
             // ========== ESTADOS PRINCIPAIS ==========
             const [abaAtiva, setAbaAtiva] = useState("receitas");
             const [mostrarConfig, setMostrarConfig] = useState(false);
             const [mostrarRelatorio, setMostrarRelatorio] = useState(false);
+            const [mostrarAvulsos, setMostrarAvulsos] = useState(false);
             const [tipoRelatorio, setTipoRelatorio] = useState("mensal");
-            const [dataInicio, setDataInicio] = useState("");
-            const [dataFim, setDataFim] = useState("");
             const [gerandoPDF, setGerandoPDF] = useState(false);
             
             const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear());
             const [mesSelecionado, setMesSelecionado] = useState(new Date().getMonth());
+            const [jogadorEditando, setJogadorEditando] = useState(null);
             
             const meses = [
                 "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
                 "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
             ];
 
-            const reportRef = useRef(null);
+            const formatarMoeda = (valor, comSimbolo = true) => {
+                const numero = Number(valor) || 0;
+                const moeda = numero.toLocaleString("pt-BR", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                return comSimbolo ? `R$ ${moeda}` : moeda;
+            };
+
+            // ========== AVULSOS CADASTRADOS ==========
+            const [avulsosCadastrados, setAvulsosCadastrados] = useState(() => {
+                const saved = localStorage.getItem("avulsos_cadastrados");
+                if (saved) return JSON.parse(saved);
+                return AVULSOS_CADASTRADOS;
+            });
+
+            const [novoAvulso, setNovoAvulso] = useState({ nome: "", telefone: "", observacao: "" });
+            const [conviteEnviando, setConviteEnviando] = useState(false);
 
             // ========== CONFIGURAÇÕES ==========
             const [configuracoes, setConfiguracoes] = useState(() => {
                 const saved = localStorage.getItem("time_configuracoes");
-                if (saved) return JSON.parse(saved);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    return {
+                        ...parsed,
+                        valorMensal: 0,
+                        valorAvulso: 0
+                    };
+                }
                 return {
-                    valorMensal: 65,
-                    valorAvulso: 30,
+                    valorMensal: 0,
+                    valorAvulso: 0,
                     diaVencimento: 5,
                     diasAntecedencia: 5,
-                    nomeTime: "Futebol Clube",
+                    nomeTime: "Amigos da Squadra",
+                    sloganTime: "UNIÃO E GARRA",
+                    anoFundacao: "2023",
                     telefoneAdmin: "5511999999999",
-                    pixKey: "time@futebol.com",
-                    mensagemRelatorio: "📊 *RELATÓRIO FINANCEIRO - {nomeTime}*\n\nPeríodo: {periodo}\n\n✅ *RESUMO:*\n💰 Total Recebido: R$ {totalRecebido}\n📉 Total Despesas: R$ {totalDespesas}\n💵 Saldo Final: R$ {saldo}\n\n📈 *DETALHES:*\n• Jogadores Pagos: {pagos}/{totalJogadores}\n• Percentual: {percentual}%\n\nAcesse o sistema para mais detalhes! ⚽",
+                    pixKey: "amigosdasquadra@futebol.com",
+                    dataProximoJogo: new Date(new Date().setDate(new Date().getDate() + 7)).toLocaleDateString('pt-BR'),
+                    horarioJogo: "20:00",
+                    localJogo: "Campo do Bairro",
+                    mensagemConvite: "🏆 *CONVITE PARA JOGO - {nomeTime}* 🏆\n\nOlá {nome}! ⚽\n\nVocê está convidado para o próximo jogo!\n\n📅 Data: {dataJogo}\n⏰ Horário: {horario}\n📍 Local: {local}\n💰 Valor Avulso: R$ {valor}\n\n🔹 Chave PIX: {pixKey}\n\nConfirme sua presença! 🎉\n\n{observacao}",
+                    mensagemRelatorio: "📊 *RELATÓRIO FINANCEIRO - {nomeTime}*\n\nPeríodo: {periodo}\n\n✅ *RESUMO:*\n💰 Total Recebido Mensalistas: R$ {totalMensalistas}\n💰 Total Recebido Avulsos: R$ {totalAvulsos}\n📉 Total Despesas: R$ {totalDespesas}\n💵 Saldo Final: R$ {saldo}\n\n📈 *DETALHES:*\n• Jogadores Pagos: {pagos}/{totalJogadores}\n• Percentual: {percentual}%\n\nAcesse o sistema para mais detalhes! ⚽",
                     mensagemCobranca: "Olá {nome}! 👋\n\nSua mensalidade do {nomeTime} referente a {mes} está chegando! 🏃‍♂️⚽\n\n📅 Vencimento: Dia {vencimento}\n💰 Valor: R$ {valor}\n\n🔹 Chave PIX: {pixKey}\n\nPor favor, realizar o pagamento até a data de vencimento.\n\nAgradecemos a atenção! 🙏",
                     mensagemPosJogo: "Olá {nome}! 👋\n\nObrigado por participar do jogo de {mes}! 🎉⚽\n\nValor da partida avulsa: R$ {valor}\n\n🔹 Chave PIX: {pixKey}\n\nQualquer dúvida, estamos à disposição! 💪"
                 };
@@ -113,7 +211,24 @@
             // ========== DADOS POR MÊS ==========
             const [dadosMensais, setDadosMensais] = useState(() => {
                 const saved = localStorage.getItem("time_dados_mensais");
-                if (saved) return JSON.parse(saved);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    const normalizado = Object.fromEntries(
+                        Object.entries(parsed).map(([key, dados]) => [
+                            key,
+                            {
+                                ...dados,
+                                despesas: (dados.despesas || []).map(d => ({ ...d, valor: 0 })),
+                                totalRecebidoMensal: 0,
+                                totalRecebidoAvulso: 0,
+                                totalRecebido: 0,
+                                totalDespesas: 0,
+                                saldo: 0
+                            }
+                        ])
+                    );
+                    return normalizado;
+                }
                 
                 const dadosIniciais = {};
                 const anoAtual = new Date().getFullYear();
@@ -121,20 +236,22 @@
                 for (let ano = anoAtual - 1; ano <= anoAtual + 1; ano++) {
                     for (let mes = 0; mes < 12; mes++) {
                         const key = `${ano}-${mes}`;
-                        // Criar cópia dos jogadores para cada mês
-                        const jogadoresMes = TODOS_JOGADORES.map((j, index) => ({
+                        const jogadoresMes = MENSALISTAS_FIXOS.map((j, index) => ({
                             id: index + 1,
                             nome: j.nome,
                             telefone: j.telefone,
-                            tipo: j.tipo,
+                            tipo: "mensal",
                             pago: false,
                             dataPagamento: null,
-                            ultimaCobranca: null
+                            ultimaCobranca: null,
+                            observacao: ""
                         }));
                         
                         dadosIniciais[key] = {
                             jogadores: jogadoresMes,
                             despesas: [],
+                            totalRecebidoMensal: 0,
+                            totalRecebidoAvulso: 0,
                             totalRecebido: 0,
                             totalDespesas: 0,
                             saldo: 0,
@@ -152,6 +269,8 @@
             const dadosAtuais = dadosMensais[currentKey] || {
                 jogadores: [],
                 despesas: [],
+                totalRecebidoMensal: 0,
+                totalRecebidoAvulso: 0,
                 totalRecebido: 0,
                 totalDespesas: 0,
                 saldo: 0,
@@ -168,197 +287,178 @@
                 localStorage.setItem("time_configuracoes", JSON.stringify(configuracoes));
             }, [configuracoes]);
 
-            // ========== FUNÇÕES DO RELATÓRIO ==========
-            const gerarRelatorio = () => {
-                let dadosRelatorio = {
-                    periodo: "",
-                    totalRecebido: 0,
-                    totalDespesas: 0,
-                    saldo: 0,
-                    jogadoresPagos: 0,
-                    totalJogadores: 0,
-                    percentualPagos: 0,
-                    despesasPorCategoria: {},
-                    jogadoresPorTipo: { mensal: 0, avulso: 0 },
-                    pagosPorTipo: { mensal: 0, avulso: 0 },
-                    topDespesas: [],
-                    inadimplentes: []
-                };
+            useEffect(() => {
+                localStorage.setItem("avulsos_cadastrados", JSON.stringify(avulsosCadastrados));
+            }, [avulsosCadastrados]);
 
-                if (tipoRelatorio === "mensal") {
-                    const dados = dadosMensais[`${anoSelecionado}-${mesSelecionado}`];
-                    if (dados) {
-                        dadosRelatorio.periodo = `${meses[mesSelecionado]} de ${anoSelecionado}`;
-                        dadosRelatorio.totalRecebido = dados.totalRecebido || 0;
-                        dadosRelatorio.totalDespesas = dados.totalDespesas || 0;
-                        dadosRelatorio.saldo = (dados.totalRecebido || 0) - (dados.totalDespesas || 0);
-                        
-                        if (dados.jogadores) {
-                            dadosRelatorio.totalJogadores = dados.jogadores.length;
-                            dadosRelatorio.jogadoresPagos = dados.jogadores.filter(j => j.pago).length;
-                            dadosRelatorio.percentualPagos = (dadosRelatorio.jogadoresPagos / dadosRelatorio.totalJogadores) * 100;
-                            
-                            dadosRelatorio.jogadoresPorTipo.mensal = dados.jogadores.filter(j => j.tipo === "mensal").length;
-                            dadosRelatorio.jogadoresPorTipo.avulso = dados.jogadores.filter(j => j.tipo === "avulso").length;
-                            
-                            dadosRelatorio.pagosPorTipo.mensal = dados.jogadores.filter(j => j.tipo === "mensal" && j.pago).length;
-                            dadosRelatorio.pagosPorTipo.avulso = dados.jogadores.filter(j => j.tipo === "avulso" && j.pago).length;
-                            
-                            dadosRelatorio.inadimplentes = dados.jogadores.filter(j => !j.pago).map(j => j.nome);
-                        }
-                        
-                        if (dados.despesas) {
-                            dados.despesas.forEach(d => {
-                                if (!dadosRelatorio.despesasPorCategoria[d.categoria]) {
-                                    dadosRelatorio.despesasPorCategoria[d.categoria] = 0;
-                                }
-                                dadosRelatorio.despesasPorCategoria[d.categoria] += d.valor;
-                            });
-                            dadosRelatorio.topDespesas = [...dados.despesas].sort((a,b) => b.valor - a.valor).slice(0,5);
-                        }
-                    }
-                } else if (tipoRelatorio === "anual") {
-                    dadosRelatorio.periodo = `Ano ${anoSelecionado}`;
-                    let mesesComDados = 0;
+            // ========== ATUALIZAR TOTAIS ==========
+            useEffect(() => {
+                if (dadosAtuais.jogadores) {
+                    let totalMensal = 0;
+                    let totalAvulso = 0;
                     
-                    for (let mes = 0; mes < 12; mes++) {
-                        const key = `${anoSelecionado}-${mes}`;
-                        const dados = dadosMensais[key];
-                        if (dados && (dados.totalRecebido > 0 || dados.totalDespesas > 0)) {
-                            mesesComDados++;
-                            dadosRelatorio.totalRecebido += dados.totalRecebido || 0;
-                            dadosRelatorio.totalDespesas += dados.totalDespesas || 0;
-                            
-                            if (dados.jogadores && mes === new Date().getMonth()) {
-                                dadosRelatorio.totalJogadores = dados.jogadores.length;
-                                dadosRelatorio.jogadoresPagos = dados.jogadores.filter(j => j.pago).length;
-                            }
+                    dadosAtuais.jogadores.forEach(j => {
+                        if (j.pago) {
+                            if (j.tipo === "mensal") totalMensal += configuracoes.valorMensal;
+                            else totalAvulso += configuracoes.valorAvulso;
                         }
-                    }
+                    });
                     
-                    dadosRelatorio.saldo = dadosRelatorio.totalRecebido - dadosRelatorio.totalDespesas;
-                    dadosRelatorio.percentualPagos = dadosRelatorio.totalJogadores > 0 ? (dadosRelatorio.jogadoresPagos / dadosRelatorio.totalJogadores) * 100 : 0;
+                    const totalRecebido = totalMensal + totalAvulso;
+                    const totalDespesas = dadosAtuais.despesas?.reduce((acc, d) => acc + (d.pago ? d.valor : 0), 0) || 0;
+                    const saldo = totalRecebido - totalDespesas;
+                    
+                    setDadosMensais(prev => ({
+                        ...prev,
+                        [currentKey]: {
+                            ...prev[currentKey],
+                            totalRecebidoMensal: totalMensal,
+                            totalRecebidoAvulso: totalAvulso,
+                            totalRecebido,
+                            totalDespesas,
+                            saldo
+                        }
+                    }));
                 }
+            }, [dadosAtuais.jogadores, dadosAtuais.despesas, currentKey, configuracoes.valorMensal, configuracoes.valorAvulso]);
 
-                return dadosRelatorio;
+            // ========== FUNÇÕES DE EDIÇÃO ==========
+            const editarJogador = (jogador) => {
+                setJogadorEditando(jogador);
             };
 
-            const exportarPDF = async () => {
-                setGerandoPDF(true);
-                const dados = gerarRelatorio();
+            const salvarEdicaoJogador = (id, campo, valor) => {
+                const lista = dadosAtuais.jogadores.map(j =>
+                    j.id === id ? { ...j, [campo]: valor } : j
+                );
+                setDadosMensais(prev => ({
+                    ...prev,
+                    [currentKey]: { ...prev[currentKey], jogadores: lista }
+                }));
+                setJogadorEditando(null);
+                showMessage(`✅ Informações atualizadas!`);
+            };
+
+            // ========== FUNÇÕES DE AVULSOS CADASTRADOS ==========
+            const adicionarAvulsoCadastrado = () => {
+                if (!novoAvulso.nome.trim()) {
+                    showMessage("⚠️ Informe o nome do jogador avulso", "error");
+                    return;
+                }
+                if (!novoAvulso.telefone.trim()) {
+                    showMessage("⚠️ Informe o telefone do jogador avulso", "error");
+                    return;
+                }
                 
-                const element = document.createElement('div');
-                element.innerHTML = `
-                    <div class="pdf-report">
-                        <div class="header">
-                            <div style="font-size: 48px; margin-bottom: 10px;">⚽</div>
-                            <h1>${configuracoes.nomeTime}</h1>
-                            <h2>RELATÓRIO FINANCEIRO</h2>
-                            <p style="color: #6b7280;">Período: ${dados.periodo}</p>
-                            <p style="color: #6b7280;">Gerado em: ${new Date().toLocaleString()}</p>
-                        </div>
-                        
-                        <div class="summary-card">
-                            <h3 style="margin-top: 0;">📊 RESUMO EXECUTIVO</h3>
-                            <table style="width: 100%;">
-                                <tr><td><strong>💰 Total Recebido</strong></td><td class="positive">R$ ${dados.totalRecebido.toFixed(2)}</td></tr>
-                                <tr><td><strong>📉 Total Despesas</strong></td><td class="negative">R$ ${dados.totalDespesas.toFixed(2)}</td></tr>
-                                <tr><td><strong>💵 Saldo Final</strong></td><td class="${dados.saldo >= 0 ? 'positive' : 'negative'}">R$ ${dados.saldo.toFixed(2)}</td></tr>
-                                <tr><td><strong>👥 Jogadores Pagos</strong></td><td>${dados.jogadoresPagos}/${dados.totalJogadores} (${dados.percentualPagos.toFixed(1)}%)</td></tr>
-                            </table>
-                        </div>
-                        
-                        <h2>📈 ANÁLISE DE RECEITAS</h2>
-                        <table>
-                            <thead><tr><th>Indicador</th><th>Valor</th></tr></thead>
-                            <tbody>
-                                <tr><td>Total de Jogadores</td><td>${dados.totalJogadores}</td></tr>
-                                <tr><td>Mensalistas</td><td>${dados.jogadoresPorTipo?.mensal || 0}</td></tr>
-                                <tr><td>Avulsos</td><td>${dados.jogadoresPorTipo?.avulso || 0}</td></tr>
-                                <tr><td>Mensalistas Pagos</td><td>${dados.pagosPorTipo?.mensal || 0}</td></tr>
-                                <tr><td>Avulsos Pagos</td><td>${dados.pagosPorTipo?.avulso || 0}</td></tr>
-                            </tbody>
-                        </table>
-                        
-                        ${Object.keys(dados.despesasPorCategoria).length > 0 ? `
-                            <h2>💸 ANÁLISE DE DESPESAS</h2>
-                            <table>
-                                <thead><tr><th>Categoria</th><th>Valor</th></tr></thead>
-                                <tbody>
-                                    ${Object.entries(dados.despesasPorCategoria).map(([cat, valor]) => `
-                                        <tr><td>${cat}</td><td class="negative">R$ ${valor.toFixed(2)}</td></tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        ` : ''}
-                        
-                        ${dados.inadimplentes && dados.inadimplentes.length > 0 ? `
-                            <h2>⚠️ INADIMPLENTES</h2>
-                            <ul>
-                                ${dados.inadimplentes.map(nome => `<li>${nome}</li>`).join('')}
-                            </ul>
-                        ` : ''}
-                        
-                        <div class="footer">
-                            <p>Chave PIX: ${configuracoes.pixKey}</p>
-                            <p>Relatório gerado automaticamente pelo Sistema de Gestão do Time</p>
-                        </div>
-                    </div>
-                `;
-                
-                const opt = {
-                    margin: [0.5, 0.5, 0.5, 0.5],
-                    filename: `relatorio_${configuracoes.nomeTime.replace(/\s/g, '_')}_${dados.periodo.replace(/\s/g, '_')}.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, letterRendering: true },
-                    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                const novoId = Math.max(...avulsosCadastrados.map(a => a.id), 0) + 1;
+                const avulso = {
+                    id: novoId,
+                    nome: novoAvulso.nome.trim(),
+                    telefone: novoAvulso.telefone.trim(),
+                    observacao: novoAvulso.observacao,
+                    ativo: true
                 };
-                
-                setTimeout(async () => {
-                    await html2pdf().set(opt).from(element).save();
-                    setGerandoPDF(false);
-                    alert("✅ PDF gerado com sucesso!");
-                }, 100);
+                setAvulsosCadastrados([...avulsosCadastrados, avulso]);
+                setNovoAvulso({ nome: "", telefone: "", observacao: "" });
+                showMessage(`✅ ${avulso.nome} adicionado aos avulsos cadastrados!`);
             };
 
-            const enviarWhatsApp = () => {
-                const dados = gerarRelatorio();
-                const mensagem = configuracoes.mensagemRelatorio
-                    .replace(/{nomeTime}/g, configuracoes.nomeTime)
-                    .replace(/{periodo}/g, dados.periodo)
-                    .replace(/{totalRecebido}/g, `R$ ${dados.totalRecebido.toFixed(2)}`)
-                    .replace(/{totalDespesas}/g, `R$ ${dados.totalDespesas.toFixed(2)}`)
-                    .replace(/{saldo}/g, `R$ ${dados.saldo.toFixed(2)}`)
-                    .replace(/{pagos}/g, dados.jogadoresPagos)
-                    .replace(/{totalJogadores}/g, dados.totalJogadores)
-                    .replace(/{percentual}/g, dados.percentualPagos.toFixed(1));
+            const removerAvulsoCadastrado = (id) => {
+                if (window.confirm(`Remover este jogador da lista de avulsos?`)) {
+                    setAvulsosCadastrados(avulsosCadastrados.filter(a => a.id !== id));
+                    showMessage(`🗑️ Removido da lista de avulsos`);
+                }
+            };
+
+            const editarAvulsoCadastrado = (avulso) => {
+                const novoNome = prompt("Novo nome:", avulso.nome);
+                const novoTelefone = prompt("Novo telefone:", avulso.telefone);
+                if (novoNome && novoTelefone) {
+                    setAvulsosCadastrados(avulsosCadastrados.map(a => 
+                        a.id === avulso.id ? { ...a, nome: novoNome, telefone: novoTelefone } : a
+                    ));
+                    showMessage(`✅ Informações do avulso atualizadas!`);
+                }
+            };
+
+            const enviarConviteWhatsApp = (avulso) => {
+                if (!avulso.telefone) {
+                    showMessage(`⚠️ ${avulso.nome} não tem telefone cadastrado!`, "error");
+                    return;
+                }
                 
-                const telefone = configuracoes.telefoneAdmin;
-                const url = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
+                const mensagem = configuracoes.mensagemConvite
+                    .replace(/{nomeTime}/g, configuracoes.nomeTime)
+                    .replace(/{nome}/g, avulso.nome)
+                    .replace(/{dataJogo}/g, configuracoes.dataProximoJogo)
+                    .replace(/{horario}/g, configuracoes.horarioJogo)
+                    .replace(/{local}/g, configuracoes.localJogo)
+                    .replace(/{valor}/g, formatarMoeda(configuracoes.valorAvulso, false))
+                    .replace(/{pixKey}/g, configuracoes.pixKey)
+                    .replace(/{observacao}/g, avulso.observacao || "");
+                
+                const telefoneFormatado = formatarTelefone(avulso.telefone);
+                const url = `https://wa.me/${telefoneFormatado}?text=${encodeURIComponent(mensagem)}`;
                 window.open(url, '_blank');
+                showMessage(`📱 Convite enviado para ${avulso.nome}!`);
+            };
+
+            const enviarConviteEmLote = () => {
+                const avulsosAtivos = avulsosCadastrados.filter(a => a.ativo && a.telefone);
+                if (avulsosAtivos.length === 0) {
+                    showMessage(`⚠️ Nenhum avulso ativo com telefone cadastrado!`, "error");
+                    return;
+                }
+                
+                setConviteEnviando(true);
+                avulsosAtivos.forEach((avulso, index) => {
+                    setTimeout(() => {
+                        const mensagem = configuracoes.mensagemConvite
+                            .replace(/{nomeTime}/g, configuracoes.nomeTime)
+                            .replace(/{nome}/g, avulso.nome)
+                            .replace(/{dataJogo}/g, configuracoes.dataProximoJogo)
+                            .replace(/{horario}/g, configuracoes.horarioJogo)
+                            .replace(/{local}/g, configuracoes.localJogo)
+                            .replace(/{valor}/g, formatarMoeda(configuracoes.valorAvulso, false))
+                            .replace(/{pixKey}/g, configuracoes.pixKey)
+                            .replace(/{observacao}/g, avulso.observacao || "");
+                        
+                        const telefoneFormatado = formatarTelefone(avulso.telefone);
+                        const url = `https://wa.me/${telefoneFormatado}?text=${encodeURIComponent(mensagem)}`;
+                        window.open(url, '_blank');
+                        
+                        if (index === avulsosAtivos.length - 1) {
+                            setTimeout(() => {
+                                setConviteEnviando(false);
+                                showMessage(`✅ ${avulsosAtivos.length} convites enviados!`);
+                            }, 2000);
+                        }
+                    }, index * 2000);
+                });
             };
 
             // ========== FUNÇÕES DE RECEITAS ==========
             const adicionarJogador = (jogadorPreCadastrado = null) => {
                 if (dadosAtuais.fechado) {
-                    showMessage(`⚠️ Mês fechado! Não é possível adicionar jogadores.`, "error");
+                    showMessage(`⚠️ Mês fechado!`, "error");
                     return;
                 }
                 
                 let novoJogador;
                 if (jogadorPreCadastrado) {
                     if (dadosAtuais.jogadores.some(j => j.nome === jogadorPreCadastrado.nome)) {
-                        showMessage(`❌ ${jogadorPreCadastrado.nome} já está na lista deste mês!`, "error");
+                        showMessage(`❌ ${jogadorPreCadastrado.nome} já está na lista!`, "error");
                         return;
                     }
                     novoJogador = {
                         id: Date.now(),
                         nome: jogadorPreCadastrado.nome,
                         telefone: jogadorPreCadastrado.telefone,
-                        tipo: jogadorPreCadastrado.tipo,
+                        tipo: jogadorPreCadastrado.tipo || "mensal",
                         pago: false,
                         dataPagamento: null,
-                        ultimaCobranca: null
+                        ultimaCobranca: null,
+                        observacao: ""
                     };
                 } else {
                     if (!nome.trim()) {
@@ -372,7 +472,8 @@
                         tipo,
                         pago: false,
                         dataPagamento: null,
-                        ultimaCobranca: null
+                        ultimaCobranca: null,
+                        observacao: ""
                     };
                 }
                 
@@ -386,7 +487,7 @@
                 
                 setNome("");
                 setTelefone("");
-                showMessage(`✅ ${novoJogador.nome} adicionado em ${meses[mesSelecionado]}/${anoSelecionado}!`);
+                showMessage(`✅ ${novoJogador.nome} adicionado!`);
             };
 
             const adicionarTodosMensalistas = () => {
@@ -405,7 +506,8 @@
                             tipo: "mensal",
                             pago: false,
                             dataPagamento: null,
-                            ultimaCobranca: null
+                            ultimaCobranca: null,
+                            observacao: ""
                         };
                         setDadosMensais(prev => ({
                             ...prev,
@@ -443,24 +545,13 @@
                 }
                 
                 const jogador = dadosAtuais.jogadores.find(j => j.id === id);
-                if (window.confirm(`Remover ${jogador.nome} da lista de ${meses[mesSelecionado]}/${anoSelecionado}?`)) {
+                if (window.confirm(`Remover ${jogador.nome} da lista?`)) {
                     setDadosMensais(prev => ({
                         ...prev,
                         [currentKey]: { ...prev[currentKey], jogadores: prev[currentKey].jogadores.filter(j => j.id !== id) }
                     }));
                     showMessage(`🗑️ ${jogador.nome} removido`);
                 }
-            };
-
-            const atualizarTelefone = (id, novoTelefone) => {
-                if (dadosAtuais.fechado) return;
-                setDadosMensais(prev => ({
-                    ...prev,
-                    [currentKey]: {
-                        ...prev[currentKey],
-                        jogadores: prev[currentKey].jogadores.map(j => j.id === id ? { ...j, telefone: novoTelefone } : j)
-                    }
-                }));
             };
 
             // ========== FUNÇÕES DE COBRANÇA ==========
@@ -481,7 +572,7 @@
                     .replace(/{nomeTime}/g, configuracoes.nomeTime)
                     .replace(/{mes}/g, meses[mesSelecionado])
                     .replace(/{vencimento}/g, configuracoes.diaVencimento)
-                    .replace(/{valor}/g, configuracoes.valorMensal)
+                    .replace(/{valor}/g, formatarMoeda(configuracoes.valorMensal, false))
                     .replace(/{pixKey}/g, configuracoes.pixKey);
                 const url = `https://wa.me/${formatarTelefone(jogador.telefone)}?text=${encodeURIComponent(mensagem)}`;
                 window.open(url, '_blank');
@@ -497,7 +588,7 @@
                     .replace(/{nome}/g, jogador.nome)
                     .replace(/{nomeTime}/g, configuracoes.nomeTime)
                     .replace(/{mes}/g, meses[mesSelecionado])
-                    .replace(/{valor}/g, configuracoes.valorAvulso)
+                    .replace(/{valor}/g, formatarMoeda(configuracoes.valorAvulso, false))
                     .replace(/{pixKey}/g, configuracoes.pixKey);
                 const url = `https://wa.me/${formatarTelefone(jogador.telefone)}?text=${encodeURIComponent(mensagem)}`;
                 window.open(url, '_blank');
@@ -518,7 +609,7 @@
                 const despesa = {
                     id: Date.now(),
                     nome: novaDespesa.nome.trim(),
-                    valor: parseFloat(novaDespesa.valor),
+                    valor: 0,
                     categoria: novaDespesa.categoria,
                     data: new Date().toLocaleDateString(),
                     pago: false,
@@ -545,6 +636,117 @@
                 }
             };
 
+            // ========== FUNÇÕES DE RELATÓRIO ==========
+            const gerarRelatorio = () => {
+                let dadosRelatorio = {
+                    periodo: "",
+                    totalRecebidoMensal: 0,
+                    totalRecebidoAvulso: 0,
+                    totalRecebido: 0,
+                    totalDespesas: 0,
+                    saldo: 0,
+                    jogadoresPagos: 0,
+                    totalJogadores: 0,
+                    percentualPagos: 0,
+                    inadimplentes: []
+                };
+
+                if (tipoRelatorio === "mensal") {
+                    const dados = dadosMensais[`${anoSelecionado}-${mesSelecionado}`];
+                    if (dados) {
+                        dadosRelatorio.periodo = `${meses[mesSelecionado]} de ${anoSelecionado}`;
+                        dadosRelatorio.totalRecebidoMensal = dados.totalRecebidoMensal || 0;
+                        dadosRelatorio.totalRecebidoAvulso = dados.totalRecebidoAvulso || 0;
+                        dadosRelatorio.totalRecebido = dados.totalRecebido || 0;
+                        dadosRelatorio.totalDespesas = dados.totalDespesas || 0;
+                        dadosRelatorio.saldo = dados.saldo || 0;
+                        
+                        if (dados.jogadores) {
+                            dadosRelatorio.totalJogadores = dados.jogadores.length;
+                            dadosRelatorio.jogadoresPagos = dados.jogadores.filter(j => j.pago).length;
+                            dadosRelatorio.percentualPagos = (dadosRelatorio.jogadoresPagos / dadosRelatorio.totalJogadores) * 100;
+                            dadosRelatorio.inadimplentes = dados.jogadores.filter(j => !j.pago).map(j => j.nome);
+                        }
+                    }
+                }
+                return dadosRelatorio;
+            };
+
+            const exportarPDF = async () => {
+                setGerandoPDF(true);
+                const dados = gerarRelatorio();
+                
+                const element = document.createElement('div');
+                element.innerHTML = `
+                    <div class="pdf-report">
+                        <div class="header">
+                            <div style="font-size: 48px; margin-bottom: 10px;">⚽</div>
+                            <h1>${configuracoes.nomeTime}</h1>
+                            <p style="color: #fbbf24; font-weight: bold;">${configuracoes.sloganTime}</p>
+                            <p style="color: #6b7280;">Est. ${configuracoes.anoFundacao}</p>
+                            <h2>RELATÓRIO FINANCEIRO</h2>
+                            <p style="color: #6b7280;">Período: ${dados.periodo}</p>
+                            <p style="color: #6b7280;">Gerado em: ${new Date().toLocaleString()}</p>
+                        </div>
+                        
+                        <div class="summary-card">
+                            <h3 style="margin-top: 0;">📊 RESUMO EXECUTIVO</h3>
+                            <table style="width: 100%;">
+                                <tr><td><strong>💰 Total Recebido (Mensalistas)</strong></td><td class="positive">${formatarMoeda(dados.totalRecebidoMensal)}</td></tr>
+                                <tr><td><strong>💰 Total Recebido (Avulsos)</strong></td><td class="positive">${formatarMoeda(dados.totalRecebidoAvulso)}</td></tr>
+                                <tr><td><strong>📉 Total Despesas</strong></td><td class="negative">${formatarMoeda(dados.totalDespesas)}</td></tr>
+                                <tr><td><strong>💵 Saldo Final</strong></td><td class="${dados.saldo >= 0 ? 'positive' : 'negative'}">${formatarMoeda(dados.saldo)}</td></tr>
+                                <tr><td><strong>👥 Jogadores Pagos</strong></td><td>${dados.jogadoresPagos}/${dados.totalJogadores} (${dados.percentualPagos.toFixed(1)}%)</td></tr>
+                            </table>
+                        </div>
+                        
+                        ${dados.inadimplentes.length > 0 ? `
+                            <h2>⚠️ INADIMPLENTES</h2>
+                            <ul>
+                                ${dados.inadimplentes.map(nome => `<li>${nome}</li>`).join('')}
+                            </ul>
+                        ` : ''}
+                        
+                        <div class="footer">
+                            <p>Chave PIX: ${configuracoes.pixKey}</p>
+                            <p>Amigos da Squadra - União e Garra</p>
+                        </div>
+                    </div>
+                `;
+                
+                const opt = {
+                    margin: [0.5, 0.5, 0.5, 0.5],
+                    filename: `relatorio_${configuracoes.nomeTime.replace(/\s/g, '_')}_${dados.periodo.replace(/\s/g, '_')}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, letterRendering: true },
+                    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                };
+                
+                setTimeout(async () => {
+                    await html2pdf().set(opt).from(element).save();
+                    setGerandoPDF(false);
+                    alert("✅ PDF gerado com sucesso!");
+                }, 100);
+            };
+
+            const enviarWhatsApp = () => {
+                const dados = gerarRelatorio();
+                const mensagem = configuracoes.mensagemRelatorio
+                    .replace(/{nomeTime}/g, configuracoes.nomeTime)
+                    .replace(/{periodo}/g, dados.periodo)
+                    .replace(/{totalMensalistas}/g, formatarMoeda(dados.totalRecebidoMensal, false))
+                    .replace(/{totalAvulsos}/g, formatarMoeda(dados.totalRecebidoAvulso, false))
+                    .replace(/{totalDespesas}/g, formatarMoeda(dados.totalDespesas, false))
+                    .replace(/{saldo}/g, formatarMoeda(dados.saldo, false))
+                    .replace(/{pagos}/g, dados.jogadoresPagos)
+                    .replace(/{totalJogadores}/g, dados.totalJogadores)
+                    .replace(/{percentual}/g, dados.percentualPagos.toFixed(1));
+                
+                const telefone = configuracoes.telefoneAdmin;
+                const url = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
+                window.open(url, '_blank');
+            };
+
             // ========== ESTADOS DA UI ==========
             const [nome, setNome] = useState("");
             const [telefone, setTelefone] = useState("");
@@ -567,11 +769,14 @@
             // ========== CÁLCULOS ==========
             const totalReceber = dadosAtuais.jogadores?.reduce((acc, j) => acc + (j.tipo === "mensal" ? configuracoes.valorMensal : configuracoes.valorAvulso), 0) || 0;
             const totalRecebido = dadosAtuais.totalRecebido || 0;
+            const totalRecebidoMensal = dadosAtuais.totalRecebidoMensal || 0;
+            const totalRecebidoAvulso = dadosAtuais.totalRecebidoAvulso || 0;
             const totalDespesas = dadosAtuais.totalDespesas || 0;
             const saldoFinal = dadosAtuais.saldo || 0;
 
             const jogadoresFiltrados = dadosAtuais.jogadores?.filter(j => {
-                const matchBusca = j.nome.toLowerCase().includes(busca.toLowerCase());
+                const matchBusca = j.nome.toLowerCase().includes(busca.toLowerCase()) ||
+                                 (j.telefone && j.telefone.includes(busca));
                 if (!matchBusca) return false;
                 if (filtro === "pagos") return j.pago;
                 if (filtro === "pendentes") return !j.pago;
@@ -596,47 +801,129 @@
             };
 
             // ========== MODAIS ==========
+            const ModalEdicao = ({ jogador, onClose }) => {
+                const [editando, setEditando] = useState({ ...jogador });
+                
+                return (
+                    <div className="fixed inset-0 modal-overlay flex items-center justify-center z-50 p-4" onClick={onClose}>
+                        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+                            <div className="bg-squadra px-6 py-4 rounded-t-2xl">
+                                <h2 className="text-xl font-semibold text-white">✏️ Editar Jogador</h2>
+                            </div>
+                            <div className="p-6 space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium mb-1">Nome</label>
+                                    <input type="text" value={editando.nome} onChange={(e) => setEditando({...editando, nome: e.target.value})} className="w-full px-4 py-2 border rounded-lg" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-1">Telefone (WhatsApp)</label>
+                                    <input type="text" value={editando.telefone} onChange={(e) => setEditando({...editando, telefone: e.target.value})} className="w-full px-4 py-2 border rounded-lg" placeholder="11999999999" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-1">Observações</label>
+                                    <textarea rows="3" value={editando.observacao || ""} onChange={(e) => setEditando({...editando, observacao: e.target.value})} className="w-full px-4 py-2 border rounded-lg" placeholder="Ex: Adiou pagamento para 30/04/2026" />
+                                </div>
+                                <div className="flex gap-3">
+                                    <button onClick={() => {
+                                        salvarEdicaoJogador(jogador.id, "nome", editando.nome);
+                                        salvarEdicaoJogador(jogador.id, "telefone", editando.telefone);
+                                        salvarEdicaoJogador(jogador.id, "observacao", editando.observacao);
+                                        onClose();
+                                    }} className="flex-1 py-2 btn-squadra text-white rounded-lg font-semibold">Salvar</button>
+                                    <button onClick={onClose} className="flex-1 py-2 bg-gray-200 rounded-lg font-semibold">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            const ModalAvulsosCadastrados = () => {
+                return (
+                    <div className="fixed inset-0 modal-overlay flex items-center justify-center z-50 p-4" onClick={() => setMostrarAvulsos(false)}>
+                        <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                            <div className="bg-squadra px-6 py-4 rounded-t-2xl flex justify-between items-center sticky top-0">
+                                <h2 className="text-xl font-semibold text-white">👥 Jogadores Avulsos Cadastrados</h2>
+                                <button onClick={() => setMostrarAvulsos(false)} className="text-white text-2xl">&times;</button>
+                            </div>
+                            <div className="p-6">
+                                <div className="mb-6">
+                                    <button onClick={enviarConviteEmLote} disabled={conviteEnviando} className="w-full py-3 btn-squadra text-white rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-50">
+                                        {conviteEnviando ? "⏳ Enviando convites..." : "📱 Enviar Convite para Todos os Avulsos"}
+                                    </button>
+                                    <p className="text-xs text-gray-400 text-center mt-2">
+                                        Próximo jogo: {configuracoes.dataProximoJogo} às {configuracoes.horarioJogo} - {configuracoes.localJogo}
+                                    </p>
+                                </div>
+                                
+                                <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                                    <h3 className="font-semibold mb-3 text-squadra">➕ Adicionar Novo Jogador Avulso</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                        <input type="text" placeholder="Nome" value={novoAvulso.nome} onChange={(e) => setNovoAvulso({...novoAvulso, nome: e.target.value})} className="px-3 py-2 border rounded-lg" />
+                                        <input type="text" placeholder="Telefone (WhatsApp)" value={novoAvulso.telefone} onChange={(e) => setNovoAvulso({...novoAvulso, telefone: e.target.value})} className="px-3 py-2 border rounded-lg" />
+                                        <button onClick={adicionarAvulsoCadastrado} className="px-4 py-2 bg-green-600 text-white rounded-lg">Adicionar</button>
+                                    </div>
+                                    <input type="text" placeholder="Observações (opcional)" value={novoAvulso.observacao} onChange={(e) => setNovoAvulso({...novoAvulso, observacao: e.target.value})} className="w-full mt-2 px-3 py-2 border rounded-lg" />
+                                </div>
+                                
+                                <div className="space-y-2">
+                                    <h3 className="font-semibold text-squadra">📋 Lista de Avulsos</h3>
+                                    {avulsosCadastrados.map(av => (
+                                        <div key={av.id} className="flex justify-between items-center p-3 border rounded-lg hover:bg-gray-50">
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <span className="font-semibold">{av.nome}</span>
+                                                    <span className="text-xs text-green-600">📱 {av.telefone}</span>
+                                                    {av.observacao && <span className="text-xs text-orange-500">📝 {av.observacao}</span>}
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <button onClick={() => enviarConviteWhatsApp(av)} className="px-3 py-1 bg-green-500 text-white rounded text-sm">📱 Convite</button>
+                                                <button onClick={() => editarAvulsoCadastrado(av)} className="px-3 py-1 bg-yellow-500 text-white rounded text-sm">✏️</button>
+                                                <button onClick={() => removerAvulsoCadastrado(av.id)} className="px-3 py-1 bg-red-500 text-white rounded text-sm">🗑️</button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {avulsosCadastrados.length === 0 && (
+                                        <p className="text-center text-gray-400 py-4">Nenhum jogador avulso cadastrado</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
             const ModalRelatorio = () => {
                 const dadosRelatorio = gerarRelatorio();
                 return (
                     <div className="fixed inset-0 modal-overlay flex items-center justify-center z-50 p-4" onClick={() => setMostrarRelatorio(false)}>
                         <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-                            <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 sticky top-0 flex justify-between items-center">
+                            <div className="bg-squadra px-6 py-4 rounded-t-2xl flex justify-between items-center sticky top-0">
                                 <h2 className="text-xl font-semibold text-white">📊 Relatório Financeiro</h2>
                                 <button onClick={() => setMostrarRelatorio(false)} className="text-white text-2xl">&times;</button>
                             </div>
                             <div className="p-6">
                                 <div className="mb-6 p-4 bg-gray-50 rounded-lg">
                                     <h3 className="font-semibold mb-3">⚙️ Configurar Relatório</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-sm mb-1">Tipo</label>
                                             <select value={tipoRelatorio} onChange={(e) => setTipoRelatorio(e.target.value)} className="w-full px-3 py-2 border rounded-lg">
                                                 <option value="mensal">📅 Mensal</option>
-                                                <option value="anual">📆 Anual</option>
                                             </select>
                                         </div>
-                                        {tipoRelatorio === "mensal" && (
-                                            <div>
-                                                <label className="block text-sm mb-1">Mês/Ano</label>
-                                                <div className="flex gap-2">
-                                                    <select value={mesSelecionado} onChange={(e) => setMesSelecionado(parseInt(e.target.value))} className="flex-1 px-3 py-2 border rounded-lg">
-                                                        {meses.map((m, i) => <option key={i} value={i}>{m}</option>)}
-                                                    </select>
-                                                    <select value={anoSelecionado} onChange={(e) => setAnoSelecionado(parseInt(e.target.value))} className="w-24 px-3 py-2 border rounded-lg">
-                                                        {[2023,2024,2025,2026].map(a => <option key={a} value={a}>{a}</option>)}
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        )}
-                                        {tipoRelatorio === "anual" && (
-                                            <div>
-                                                <label className="block text-sm mb-1">Ano</label>
-                                                <select value={anoSelecionado} onChange={(e) => setAnoSelecionado(parseInt(e.target.value))} className="w-full px-3 py-2 border rounded-lg">
+                                        <div>
+                                            <label className="block text-sm mb-1">Mês/Ano</label>
+                                            <div className="flex gap-2">
+                                                <select value={mesSelecionado} onChange={(e) => setMesSelecionado(parseInt(e.target.value))} className="flex-1 px-3 py-2 border rounded-lg">
+                                                    {meses.map((m, i) => <option key={i} value={i}>{m}</option>)}
+                                                </select>
+                                                <select value={anoSelecionado} onChange={(e) => setAnoSelecionado(parseInt(e.target.value))} className="w-24 px-3 py-2 border rounded-lg">
                                                     {[2023,2024,2025,2026].map(a => <option key={a} value={a}>{a}</option>)}
                                                 </select>
                                             </div>
-                                        )}
+                                        </div>
                                     </div>
                                 </div>
                                 
@@ -659,25 +946,20 @@
                                         </div>
                                         <div className="grid grid-cols-2 gap-2 mb-4">
                                             <div className="bg-green-50 p-3 rounded text-center">
-                                                <div className="text-xs text-green-600">💰 Receitas</div>
-                                                <div className="font-bold text-green-600">R$ {dadosRelatorio.totalRecebido.toFixed(2)}</div>
+                                                <div className="text-xs text-green-600">💰 Mensalistas</div>
+                                                <div className="font-bold text-green-600">{formatarMoeda(dadosRelatorio.totalRecebidoMensal)}</div>
+                                            </div>
+                                            <div className="bg-blue-50 p-3 rounded text-center">
+                                                <div className="text-xs text-blue-600">💰 Avulsos</div>
+                                                <div className="font-bold text-blue-600">{formatarMoeda(dadosRelatorio.totalRecebidoAvulso)}</div>
                                             </div>
                                             <div className="bg-red-50 p-3 rounded text-center">
                                                 <div className="text-xs text-red-600">📉 Despesas</div>
-                                                <div className="font-bold text-red-600">R$ {dadosRelatorio.totalDespesas.toFixed(2)}</div>
+                                                <div className="font-bold text-red-600">{formatarMoeda(dadosRelatorio.totalDespesas)}</div>
                                             </div>
-                                            <div className={`${dadosRelatorio.saldo >= 0 ? 'bg-blue-50' : 'bg-orange-50'} p-3 rounded text-center col-span-2`}>
+                                            <div className={`${dadosRelatorio.saldo >= 0 ? 'bg-purple-50' : 'bg-orange-50'} p-3 rounded text-center`}>
                                                 <div className="text-xs">💵 Saldo</div>
-                                                <div className={`font-bold ${dadosRelatorio.saldo >= 0 ? 'text-blue-600' : 'text-orange-600'}`}>R$ {dadosRelatorio.saldo.toFixed(2)}</div>
-                                            </div>
-                                        </div>
-                                        <div className="border-t pt-3">
-                                            <div className="flex justify-between text-xs mb-1">
-                                                <span>👥 Jogadores Pagos:</span>
-                                                <span className="font-semibold">{dadosRelatorio.jogadoresPagos}/{dadosRelatorio.totalJogadores}</span>
-                                            </div>
-                                            <div className="w-full bg-gray-200 rounded-full h-2">
-                                                <div className="bg-green-500 h-2 rounded-full" style={{ width: `${dadosRelatorio.percentualPagos}%` }}></div>
+                                                <div className={`font-bold ${dadosRelatorio.saldo >= 0 ? 'text-purple-600' : 'text-orange-600'}`}>{formatarMoeda(dadosRelatorio.saldo)}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -691,7 +973,7 @@
             const ModalConfiguracoes = () => (
                 <div className="fixed inset-0 modal-overlay flex items-center justify-center z-50 p-4" onClick={() => setMostrarConfig(false)}>
                     <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-                        <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 sticky top-0">
+                        <div className="bg-squadra px-6 py-4 rounded-t-2xl sticky top-0">
                             <h2 className="text-xl font-semibold text-white">⚙️ Configurações</h2>
                         </div>
                         <div className="p-6 space-y-4">
@@ -702,11 +984,11 @@
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm mb-1">Valor Mensal (R$)</label>
-                                    <input type="number" value={configuracoes.valorMensal} onChange={(e) => setConfiguracoes({...configuracoes, valorMensal: parseFloat(e.target.value)})} className="w-full px-4 py-2 border rounded-lg" />
+                                    <input type="number" value={configuracoes.valorMensal} onChange={(e) => setConfiguracoes({...configuracoes, valorMensal: 0})} className="w-full px-4 py-2 border rounded-lg" />
                                 </div>
                                 <div>
                                     <label className="block text-sm mb-1">Valor Avulso (R$)</label>
-                                    <input type="number" value={configuracoes.valorAvulso} onChange={(e) => setConfiguracoes({...configuracoes, valorAvulso: parseFloat(e.target.value)})} className="w-full px-4 py-2 border rounded-lg" />
+                                    <input type="number" value={configuracoes.valorAvulso} onChange={(e) => setConfiguracoes({...configuracoes, valorAvulso: 0})} className="w-full px-4 py-2 border rounded-lg" />
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
@@ -719,11 +1001,33 @@
                                     <input type="text" value={configuracoes.telefoneAdmin} onChange={(e) => setConfiguracoes({...configuracoes, telefoneAdmin: e.target.value})} className="w-full px-4 py-2 border rounded-lg" />
                                 </div>
                             </div>
+                            <div className="border-t pt-4">
+                                <h3 className="font-semibold mb-3 text-squadra">📅 Configurações do Próximo Jogo</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm mb-1">Data do Próximo Jogo</label>
+                                        <input type="date" value={configuracoes.dataProximoJogo} onChange={(e) => setConfiguracoes({...configuracoes, dataProximoJogo: e.target.value})} className="w-full px-4 py-2 border rounded-lg" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm mb-1">Horário</label>
+                                        <input type="time" value={configuracoes.horarioJogo} onChange={(e) => setConfiguracoes({...configuracoes, horarioJogo: e.target.value})} className="w-full px-4 py-2 border rounded-lg" />
+                                    </div>
+                                    <div className="col-span-2">
+                                        <label className="block text-sm mb-1">Local do Jogo</label>
+                                        <input type="text" value={configuracoes.localJogo} onChange={(e) => setConfiguracoes({...configuracoes, localJogo: e.target.value})} className="w-full px-4 py-2 border rounded-lg" />
+                                    </div>
+                                </div>
+                            </div>
                             <div>
                                 <label className="block text-sm mb-1">Chave PIX</label>
                                 <input type="text" value={configuracoes.pixKey} onChange={(e) => setConfiguracoes({...configuracoes, pixKey: e.target.value})} className="w-full px-4 py-2 border rounded-lg" />
                             </div>
-                            <button onClick={() => { setMostrarConfig(false); showMessage("✅ Configurações salvas!"); }} className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold">
+                            <div>
+                                <label className="block text-sm mb-1">Mensagem de Convite</label>
+                                <textarea rows="4" value={configuracoes.mensagemConvite} onChange={(e) => setConfiguracoes({...configuracoes, mensagemConvite: e.target.value})} className="w-full px-4 py-2 border rounded-lg text-sm" />
+                                <p className="text-xs text-gray-400 mt-1">Variáveis: {`{nome}`, `{nomeTime}`, `{dataJogo}`, `{horario}`, `{local}`, `{valor}`, `{pixKey}`, `{observacao}`}</p>
+                            </div>
+                            <button onClick={() => { setMostrarConfig(false); showMessage("✅ Configurações salvas!"); }} className="w-full py-3 btn-squadra text-white rounded-lg font-semibold">
                                 Salvar
                             </button>
                         </div>
@@ -732,27 +1036,32 @@
             );
 
             return (
-                <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+                <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-yellow-50">
                     <div className="max-w-7xl mx-auto p-4 md:p-6">
-                        {/* Header */}
+                        {/* Header com Escudo - IMAGEM REAL */}
                         <div className="text-center mb-8 animate-slide-in">
-                            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl shadow-lg mb-4">
-                                <span className="text-4xl">⚽</span>
+                            <div className="escudo-container w-36 h-36 mx-auto rounded-full flex items-center justify-center mb-4 relative">
+                                <div className="escudo-inner w-32 h-32 rounded-full flex flex-col items-center justify-center p-2">
+                                    <img
+                                        src="logo.png"
+                                        alt="Logo Amigos da Squadra"
+                                        className="w-full h-full object-contain"
+                                    />
+                                </div>
                             </div>
-                            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            <h1 className="text-3xl md:text-4xl font-bold text-squadra">
                                 {configuracoes.nomeTime}
                             </h1>
-                            <p className="text-gray-500 mt-2">Gestão Financeira Completa - Controle Mês a Mês</p>
-                            <div className="text-xs text-gray-400 mt-1">
-                                {MENSALISTAS_FIXOS.length} Mensalistas | {AVULSOS_ROTINEIROS.length} Avulsos Rotineiros
-                            </div>
+                            <p className="text-yellow-600 font-semibold">{configuracoes.sloganTime}</p>
+                            <p className="text-gray-400 text-sm">Est. {configuracoes.anoFundacao}</p>
                         </div>
 
                         {/* Barra de ferramentas */}
                         <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
                             <div className="flex gap-2">
-                                <button onClick={() => setMostrarConfig(true)} className="px-4 py-2 bg-gray-800 text-white rounded-lg">⚙️ Config</button>
-                                <button onClick={() => setMostrarRelatorio(true)} className="px-4 py-2 bg-blue-600 text-white rounded-lg animate-pulse-custom">📊 Relatório</button>
+                                <button onClick={() => setMostrarConfig(true)} className="px-4 py-2 bg-gray-800 text-white rounded-lg">⚙️</button>
+                                <button onClick={() => setMostrarRelatorio(true)} className="px-4 py-2 btn-squadra text-white rounded-lg animate-pulse-custom">📊 Relatório</button>
+                                <button onClick={() => setMostrarAvulsos(true)} className="px-4 py-2 bg-purple-600 text-white rounded-lg">👥 Avulsos</button>
                             </div>
                             <div className="flex items-center gap-4 bg-white rounded-lg shadow p-2">
                                 <button onClick={() => {
@@ -789,23 +1098,26 @@
                         </div>
 
                         {/* Cards de Resumo */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                            <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500">
-                                <p className="text-gray-500 text-sm">Total Recebido</p>
-                                <p className="text-3xl font-bold text-green-600">R$ {totalRecebido}</p>
-                                <p className="text-xs text-gray-400">Meta: R$ {totalReceber}</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+                            <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500 card-hover">
+                                <p className="text-gray-500 text-sm">💰 Mensalistas Pagos</p>
+                                <p className="text-2xl font-bold text-green-600">{formatarMoeda(totalRecebidoMensal)}</p>
                             </div>
-                            <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-red-500">
-                                <p className="text-gray-500 text-sm">Despesas Pagas</p>
-                                <p className="text-3xl font-bold text-red-600">R$ {totalDespesas}</p>
+                            <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500 card-hover">
+                                <p className="text-gray-500 text-sm">💰 Avulsos Pagos</p>
+                                <p className="text-2xl font-bold text-blue-600">{formatarMoeda(totalRecebidoAvulso)}</p>
                             </div>
-                            <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500">
-                                <p className="text-gray-500 text-sm">A Receber</p>
-                                <p className="text-3xl font-bold text-blue-600">R$ {totalReceber - totalRecebido}</p>
+                            <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-red-500 card-hover">
+                                <p className="text-gray-500 text-sm">📉 Despesas</p>
+                                <p className="text-2xl font-bold text-red-600">{formatarMoeda(totalDespesas)}</p>
                             </div>
-                            <div className={`bg-white rounded-2xl shadow-lg p-6 border-l-4 ${saldoFinal >= 0 ? 'border-purple-500' : 'border-orange-500'}`}>
-                                <p className="text-gray-500 text-sm">Saldo</p>
-                                <p className={`text-3xl font-bold ${saldoFinal >= 0 ? 'text-purple-600' : 'text-orange-600'}`}>R$ {saldoFinal}</p>
+                            <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500 card-hover">
+                                <p className="text-gray-500 text-sm">💵 A Receber</p>
+                                <p className="text-2xl font-bold text-yellow-600">{formatarMoeda(totalReceber - totalRecebido)}</p>
+                            </div>
+                            <div className={`bg-white rounded-2xl shadow-lg p-6 border-l-4 ${saldoFinal >= 0 ? 'border-purple-500' : 'border-orange-500'} card-hover`}>
+                                <p className="text-gray-500 text-sm">💵 Saldo</p>
+                                <p className={`text-2xl font-bold ${saldoFinal >= 0 ? 'text-purple-600' : 'text-orange-600'}`}>{formatarMoeda(saldoFinal)}</p>
                             </div>
                         </div>
 
@@ -818,41 +1130,41 @@
 
                         {/* Abas */}
                         <div className="flex gap-2 mb-6 border-b border-gray-200">
-                            <button onClick={() => setAbaAtiva("receitas")} className={`px-6 py-3 rounded-t-lg font-semibold transition-all ${abaAtiva === "receitas" ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white" : "bg-gray-100"}`}>📊 Receitas</button>
-                            <button onClick={() => setAbaAtiva("despesas")} className={`px-6 py-3 rounded-t-lg font-semibold transition-all ${abaAtiva === "despesas" ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white" : "bg-gray-100"}`}>💸 Despesas</button>
+                            <button onClick={() => setAbaAtiva("receitas")} className={`px-6 py-3 rounded-t-lg font-semibold transition-all ${abaAtiva === "receitas" ? "bg-squadra text-white" : "bg-gray-100"}`}>📊 Receitas</button>
+                            <button onClick={() => setAbaAtiva("despesas")} className={`px-6 py-3 rounded-t-lg font-semibold transition-all ${abaAtiva === "despesas" ? "bg-squadra text-white" : "bg-gray-100"}`}>💸 Despesas</button>
                         </div>
 
                         {/* Conteúdo Receitas */}
                         {abaAtiva === "receitas" && (
                             <>
-                                <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-                                    <h2 className="text-xl font-semibold mb-4">➕ Adicionar Jogador</h2>
+                                <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 card-hover">
+                                    <h2 className="text-xl font-semibold mb-4 text-squadra">➕ Adicionar Jogador</h2>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                        <input type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} className="px-4 py-2 border rounded-lg" disabled={dadosAtuais.fechado} />
-                                        <input type="text" placeholder="Telefone" value={telefone} onChange={(e) => setTelefone(e.target.value)} className="px-4 py-2 border rounded-lg" disabled={dadosAtuais.fechado} />
+                                        <input type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} className="px-4 py-2 border rounded-lg focus:outline-none focus:border-yellow-400" disabled={dadosAtuais.fechado} />
+                                        <input type="text" placeholder="Telefone (WhatsApp)" value={telefone} onChange={(e) => setTelefone(e.target.value)} className="px-4 py-2 border rounded-lg focus:outline-none focus:border-yellow-400" disabled={dadosAtuais.fechado} />
                                         <select value={tipo} onChange={(e) => setTipo(e.target.value)} className="px-4 py-2 border rounded-lg" disabled={dadosAtuais.fechado}>
-                                            <option value="mensal">Mensalista - R$ {configuracoes.valorMensal}</option>
-                                            <option value="avulso">Avulso - R$ {configuracoes.valorAvulso}</option>
+                                            <option value="mensal">Mensalista - {formatarMoeda(configuracoes.valorMensal)}</option>
+                                            <option value="avulso">Avulso - {formatarMoeda(configuracoes.valorAvulso)}</option>
                                         </select>
-                                        <button onClick={adicionarJogador} disabled={dadosAtuais.fechado} className="md:col-span-3 px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg disabled:opacity-50">Adicionar</button>
+                                        <button onClick={adicionarJogador} disabled={dadosAtuais.fechado} className="md:col-span-3 px-6 py-2 btn-squadra text-white rounded-lg disabled:opacity-50 font-semibold">Adicionar Jogador</button>
                                     </div>
                                 </div>
 
                                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
                                     <div className="flex flex-col md:flex-row gap-4 justify-between">
                                         <div className="flex gap-2 flex-wrap">
-                                            <button onClick={() => setFiltro("todos")} className={`px-3 py-1 rounded ${filtro === "todos" ? "bg-blue-600 text-white" : "bg-gray-100"}`}>Todos ({dadosAtuais.jogadores?.length || 0})</button>
-                                            <button onClick={() => setFiltro("mensal")} className={`px-3 py-1 rounded ${filtro === "mensal" ? "bg-blue-600 text-white" : "bg-gray-100"}`}>Mensalistas</button>
-                                            <button onClick={() => setFiltro("avulso")} className={`px-3 py-1 rounded ${filtro === "avulso" ? "bg-blue-600 text-white" : "bg-gray-100"}`}>Avulsos</button>
+                                            <button onClick={() => setFiltro("todos")} className={`px-3 py-1 rounded ${filtro === "todos" ? "bg-squadra text-white" : "bg-gray-100"}`}>Todos ({dadosAtuais.jogadores?.length || 0})</button>
+                                            <button onClick={() => setFiltro("mensal")} className={`px-3 py-1 rounded ${filtro === "mensal" ? "bg-squadra text-white" : "bg-gray-100"}`}>Mensalistas</button>
+                                            <button onClick={() => setFiltro("avulso")} className={`px-3 py-1 rounded ${filtro === "avulso" ? "bg-squadra text-white" : "bg-gray-100"}`}>Avulsos</button>
                                             <button onClick={() => setFiltro("pagos")} className={`px-3 py-1 rounded ${filtro === "pagos" ? "bg-green-600 text-white" : "bg-gray-100"}`}>Pagos</button>
                                             <button onClick={() => setFiltro("pendentes")} className={`px-3 py-1 rounded ${filtro === "pendentes" ? "bg-orange-600 text-white" : "bg-gray-100"}`}>Pendentes</button>
                                         </div>
-                                        <input type="text" placeholder="Buscar..." value={busca} onChange={(e) => setBusca(e.target.value)} className="px-4 py-2 border rounded-lg w-full md:w-64" />
+                                        <input type="text" placeholder="Buscar por nome ou telefone..." value={busca} onChange={(e) => setBusca(e.target.value)} className="px-4 py-2 border rounded-lg w-full md:w-64" />
                                     </div>
                                 </div>
 
                                 <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4">
+                                    <div className="bg-squadra px-6 py-4">
                                         <h2 className="text-xl font-semibold text-white">📋 Jogadores - {meses[mesSelecionado]}/{anoSelecionado}</h2>
                                     </div>
                                     <div className="divide-y divide-gray-200 max-h-96 overflow-y-auto">
@@ -860,14 +1172,14 @@
                                             <div className="text-center py-12">
                                                 <p className="text-gray-400">Nenhum jogador encontrado</p>
                                                 {dadosAtuais.jogadores?.length === 0 && (
-                                                    <button onClick={adicionarTodosMensalistas} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg">
-                                                        📋 Carregar Lista de Mensalistas
+                                                    <button onClick={adicionarTodosMensalistas} className="mt-4 px-4 py-2 bg-squadra text-white rounded-lg">
+                                                        📋 Carregar Mensalistas
                                                     </button>
                                                 )}
                                             </div>
                                         ) : (
                                             jogadoresFiltrados.map((j) => (
-                                                <div key={j.id} className="p-4 hover:bg-gray-50">
+                                                <div key={j.id} className="p-4 hover:bg-gray-50 transition-colors">
                                                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                                                         <div className="flex-1">
                                                             <div className="flex items-center gap-2 flex-wrap">
@@ -876,7 +1188,7 @@
                                                                     {j.tipo === "mensal" ? "Mensalista" : "Avulso"}
                                                                 </span>
                                                                 <span className="text-sm text-gray-600">
-                                                                    R$ {j.tipo === "mensal" ? configuracoes.valorMensal : configuracoes.valorAvulso}
+                                                                    {formatarMoeda(j.tipo === "mensal" ? configuracoes.valorMensal : configuracoes.valorAvulso)}
                                                                 </span>
                                                                 {j.telefone ? (
                                                                     <span className="text-xs text-green-600">📱 {j.telefone}</span>
@@ -886,17 +1198,13 @@
                                                                 {j.dataPagamento && (
                                                                     <span className="text-xs text-gray-400">🗓️ Pago em {j.dataPagamento}</span>
                                                                 )}
+                                                                {j.observacao && (
+                                                                    <span className="text-xs text-orange-500">📝 {j.observacao}</span>
+                                                                )}
                                                             </div>
                                                         </div>
                                                         <div className="flex gap-2">
-                                                            <input 
-                                                                type="text" 
-                                                                placeholder="Telefone" 
-                                                                value={j.telefone || ""} 
-                                                                onChange={(e) => atualizarTelefone(j.id, e.target.value)} 
-                                                                className="px-2 py-1 text-sm border rounded w-32"
-                                                                disabled={dadosAtuais.fechado}
-                                                            />
+                                                            <button onClick={() => editarJogador(j)} className="px-3 py-1 bg-yellow-500 text-white rounded text-sm">✏️ Editar</button>
                                                             <button onClick={() => removerJogador(j.id)} disabled={dadosAtuais.fechado} className="px-3 py-1 bg-red-500 text-white rounded text-sm disabled:opacity-50">🗑️</button>
                                                             {!j.pago && j.tipo === "mensal" && (
                                                                 <button onClick={() => enviarCobrancaMensal(j)} className="px-3 py-1 bg-green-500 text-white rounded text-sm">📱 Cobrar</button>
@@ -905,7 +1213,7 @@
                                                                 <button onClick={() => enviarCobrancaAvulso(j)} className="px-3 py-1 bg-orange-500 text-white rounded text-sm">📱 Cobrar</button>
                                                             )}
                                                             <button onClick={() => togglePagamento(j.id)} disabled={dadosAtuais.fechado} className={`px-3 py-1 rounded text-sm ${j.pago ? "bg-green-500 text-white" : "bg-gray-200"} disabled:opacity-50`}>
-                                                                {j.pago ? "Pago" : "Pendente"}
+                                                                {j.pago ? "✅ Pago" : "⏳ Pendente"}
                                                             </button>
                                                         </div>
                                                     </div>
@@ -920,36 +1228,36 @@
                         {/* Conteúdo Despesas */}
                         {abaAtiva === "despesas" && (
                             <>
-                                <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-                                    <h2 className="text-xl font-semibold mb-4">💸 Adicionar Despesa</h2>
+                                <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 card-hover">
+                                    <h2 className="text-xl font-semibold mb-4 text-squadra">💸 Adicionar Despesa</h2>
                                     <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                                        <input type="text" placeholder="Nome" value={novaDespesa.nome} onChange={(e) => setNovaDespesa({...novaDespesa, nome: e.target.value})} className="px-4 py-2 border rounded-lg" disabled={dadosAtuais.fechado} />
-                                        <input type="number" placeholder="Valor" value={novaDespesa.valor} onChange={(e) => setNovaDespesa({...novaDespesa, valor: e.target.value})} className="px-4 py-2 border rounded-lg" disabled={dadosAtuais.fechado} />
+                                        <input type="text" placeholder="Nome da despesa" value={novaDespesa.nome} onChange={(e) => setNovaDespesa({...novaDespesa, nome: e.target.value})} className="px-4 py-2 border rounded-lg focus:outline-none focus:border-yellow-400" disabled={dadosAtuais.fechado} />
+                                        <input type="number" placeholder="Valor (R$)" value={novaDespesa.valor} onChange={(e) => setNovaDespesa({...novaDespesa, valor: "0"})} className="px-4 py-2 border rounded-lg" disabled={dadosAtuais.fechado} />
                                         <select value={novaDespesa.categoria} onChange={(e) => setNovaDespesa({...novaDespesa, categoria: e.target.value})} className="px-4 py-2 border rounded-lg" disabled={dadosAtuais.fechado}>
                                             <option value="estrutura">🏟️ Locação da Quadra</option>
                                             <option value="serviços">🧤 Goleiro</option>
                                             <option value="manutenção">👕 Lavagem Uniforme</option>
                                             <option value="outros">📝 Outros</option>
                                         </select>
-                                        <button onClick={adicionarDespesa} disabled={dadosAtuais.fechado} className="px-6 py-2 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-lg disabled:opacity-50">Adicionar</button>
+                                        <button onClick={adicionarDespesa} disabled={dadosAtuais.fechado} className="px-6 py-2 btn-squadra text-white rounded-lg disabled:opacity-50 font-semibold">Adicionar Despesa</button>
                                     </div>
                                 </div>
 
                                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
                                     <div className="flex gap-2">
-                                        <button onClick={() => setFiltroDespesa("todas")} className={`px-3 py-1 rounded ${filtroDespesa === "todas" ? "bg-blue-600 text-white" : "bg-gray-100"}`}>Todas</button>
+                                        <button onClick={() => setFiltroDespesa("todas")} className={`px-3 py-1 rounded ${filtroDespesa === "todas" ? "bg-squadra text-white" : "bg-gray-100"}`}>Todas</button>
                                         <button onClick={() => setFiltroDespesa("pagas")} className={`px-3 py-1 rounded ${filtroDespesa === "pagas" ? "bg-green-600 text-white" : "bg-gray-100"}`}>Pagas</button>
                                         <button onClick={() => setFiltroDespesa("pendentes")} className={`px-3 py-1 rounded ${filtroDespesa === "pendentes" ? "bg-orange-600 text-white" : "bg-gray-100"}`}>Pendentes</button>
                                     </div>
                                 </div>
 
                                 <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                                    <div className="bg-gradient-to-r from-red-600 to-orange-600 px-6 py-4">
+                                    <div className="bg-squadra px-6 py-4">
                                         <h2 className="text-xl font-semibold text-white">📋 Despesas</h2>
                                     </div>
                                     <div className="divide-y divide-gray-200 max-h-96 overflow-y-auto">
                                         {despesasFiltradas.length === 0 ? (
-                                            <div className="text-center py-12"><p className="text-gray-400">Nenhuma despesa</p></div>
+                                            <div className="text-center py-12"><p className="text-gray-400">Nenhuma despesa cadastrada</p></div>
                                         ) : (
                                             despesasFiltradas.map((d) => (
                                                 <div key={d.id} className="p-4 hover:bg-gray-50">
@@ -957,13 +1265,13 @@
                                                         <div>
                                                             <span className="font-semibold">{d.nome}</span>
                                                             <span className="text-xs ml-2 px-2 py-1 rounded-full bg-gray-100">{categorias[d.categoria]}</span>
-                                                            <span className="text-sm ml-2 text-red-600 font-bold">R$ {d.valor}</span>
-                                                            {d.dataPagamento && <span className="text-xs ml-2 text-green-600">✅ {d.dataPagamento}</span>}
+                                                            <span className="text-sm ml-2 text-red-600 font-bold">{formatarMoeda(d.valor)}</span>
+                                                            {d.dataPagamento && <span className="text-xs ml-2 text-green-600">✅ Paga em {d.dataPagamento}</span>}
                                                         </div>
                                                         <div className="flex gap-2">
                                                             <button onClick={() => removerDespesa(d.id)} disabled={dadosAtuais.fechado} className="px-3 py-1 bg-red-500 text-white rounded text-sm disabled:opacity-50">🗑️</button>
                                                             <button onClick={() => togglePagamentoDespesa(d.id)} disabled={dadosAtuais.fechado} className={`px-3 py-1 rounded text-sm ${d.pago ? "bg-green-500 text-white" : "bg-gray-200"} disabled:opacity-50`}>
-                                                                {d.pago ? "Paga" : "Pendente"}
+                                                                {d.pago ? "✅ Paga" : "⏳ Pendente"}
                                                             </button>
                                                         </div>
                                                     </div>
@@ -977,12 +1285,15 @@
 
                         <div className="mt-8 text-center text-sm text-gray-400">
                             <p>💡 Dados salvos automaticamente | 📊 Gere relatórios em PDF | 📱 Compartilhe via WhatsApp</p>
-                            <p className="mt-1">👥 {MENSALISTAS_FIXOS.length} Mensalistas Fixos | {AVULSOS_ROTINEIROS.length} Avulsos Rotineiros</p>
+                            <p className="mt-1">👥 {MENSALISTAS_FIXOS.length} Mensalistas Fixos | {avulsosCadastrados.length} Avulsos Cadastrados</p>
+                            <p className="mt-1 text-yellow-600">🏆 {configuracoes.nomeTime} - {configuracoes.sloganTime} - Est. {configuracoes.anoFundacao}</p>
                         </div>
                     </div>
 
+                    {jogadorEditando && <ModalEdicao jogador={jogadorEditando} onClose={() => setJogadorEditando(null)} />}
                     {mostrarConfig && <ModalConfiguracoes />}
                     {mostrarRelatorio && <ModalRelatorio />}
+                    {mostrarAvulsos && <ModalAvulsosCadastrados />}
                 </div>
             );
         }
